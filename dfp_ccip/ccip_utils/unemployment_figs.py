@@ -1,0 +1,93 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Oct 11 15:52:49 2020
+
+@author: kianaocean
+"""
+from urllib.request import urlopen
+import json
+import pandas as pd
+from datetime import datetime
+import plotly.express as px
+import plotly.figure_factory as ff
+from plotly.offline import plot
+
+# Import base county level map
+
+with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
+    counties = json.load(response)
+
+# Import latest unemployment data & do cleaning
+csv_path = 'unemployment.csv'
+df = pd.read_csv(csv_path, thousands=',', dtype={'fips': str, 'area_title': str, 'civ_labor_force': str, \
+                                  'employed': str, 'unemployed': str, 'unemployed_rate': str, 'date_monthly': str})
+
+
+df.rename(columns = {'fips':'fips_old'}, inplace = True)
+num_rows, num_cols = df.shape
+fips_list = []
+for i in range(num_rows):
+    fips_clean = str(df.iloc[i]['fips_old']).zfill(5)
+    fips_list.append(fips_clean)  
+df['fips'] = fips_list
+
+
+
+# Get user input
+state = input("Enter your state name: ").title()
+county = input("Enter your county name: ").title()
+date_input = input("Enter month (MM/YYYY) in last 14 months: ")
+
+
+df['date_monthly'] = pd.to_datetime(df['date_monthly'])
+max_date = df['date_monthly'].max()
+min_date = df['date_monthly'].min()
+if (date_input != ''):
+    date = datetime.strptime(date_input, '%m/%Y')
+    if (pd.to_datetime(date) > max_date):
+        date = max_date
+    elif (pd.to_datetime(date) < min_date):
+        date = min_date
+    df = df.loc[(df['month'] == date.month) & (df['year'] == date.year)]
+    
+df = df[['state','county','fips','unemployed_rate','date_monthly','civ_labor_force','unemployed']]
+df.drop_duplicates(inplace=True)
+df = df.loc[df['unemployed_rate'] != '-'] # filter out any missing rates
+df['unemployed_rate'] = pd.to_numeric(df['unemployed_rate'])
+df['civ_labor_force'] = df['civ_labor_force'].str.replace(',', '').astype(float)
+df['unemployed'] = df['unemployed'].str.replace(',', '').astype(float)
+df = df.loc[df['fips'] != '00nan'] # filter out any missing counties
+
+
+
+# Create maps & plots
+if ((state == '') & (county == '') & (date_input == '')):
+    df = df.groupby(['date_monthly']).agg({'civ_labor_force':'sum', 'unemployed':'sum'}).reset_index()
+    df['unemployment'] = (df['unemployed']/df['civ_labor_force'])*100
+    df.plot(x='date_monthly', y='unemployment', kind='line')
+elif ((state != '') & (county == '') & (date_input == '')):
+    state_df = df.loc[df['state'] == state]
+    state_df = state_df.groupby(['date_monthly']).agg({'civ_labor_force':'sum', 'unemployed':'sum'}).reset_index()
+    state_df['unemployment'] = (state_df['unemployed']/state_df['civ_labor_force'])*100
+    state_df.plot(x='date_monthly', y='unemployment', kind='line')
+elif ((state != '') & (county != '') & (date_input == '')):
+    statecounty_df = df.loc[(df['state'] == state) & (df['county'] == county)]
+    statecounty_df = statecounty_df.groupby(['date_monthly']).agg({'civ_labor_force':'sum', 'unemployed':'sum'}).reset_index()
+    statecounty_df['unemployment'] = (statecounty_df['unemployed']/statecounty_df['civ_labor_force'])*100
+    statecounty_df.plot(x='date_monthly', y='unemployment', kind='line')
+elif ((state == '') & (county == '') & (date_input != '')):
+    date_str = date.strftime('%B %Y')
+    title = 'US Unemployment Rates by County, ' + date_str
+    fig = px.choropleth(df, geojson=counties, locations='fips', color='unemployed_rate', hover_name='county', title=title,\
+                    color_continuous_scale='Blues', scope='usa', labels={'unemployed_rate':'Unemployment Rate'})
+    plot(fig)
+else:
+    state_df = df.loc[df['state'] == state]
+    date_str = date.strftime('%B %Y')
+    title = state + ' Unemployment Rates by County, ' + date_str
+    # colorscale = ["#030512","#1d1d3b","#323268","#3d4b94","#3e6ab0","#4989bc","#60a7c7","#85c5d3","#b7e0e4","#eafcfd"]
+    fig = ff.create_choropleth(fips=state_df['fips'], values=state_df['unemployed_rate'], scope=[state], \
+                               show_state_data=True, round_legend_values=True, legend_title='Unemployment Rate', \
+                                       county_outline={'color': 'rgb(255,255,255)', 'width': 0.5},exponent_format=True, show_hover=True, title=title)
+    plot(fig)
