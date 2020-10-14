@@ -1,9 +1,7 @@
 ## Personal income
 import json
 from urllib.request import urlopen
-import csv
 import pandas as pd
-import sys
 
 
 # Load BEA data as personal income
@@ -16,20 +14,10 @@ data = json.loads(source)
 
 # Create dataframe
 pi_df = pd.DataFrame(data['BEAAPI']['Results']['Data'])
-# print(sys.getsizeof(pi_df))
 
 # Function for calling dataframe in other module
 def get_pi_df():
     return pi_df
-
-if __name__ == '__main__':
-    # Export to csv
-    with open('/Users/kianaocean/Documents/CMU/Python (95888)/Project/personal_income_clean.csv', mode='w') as csv_file:
-        fieldnames = ["Code", "GeoFips", "GeoName", "TimePeriod", "CL_UNIT", "UNIT_MULT", "DataValue", "NoteRef"]
-        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-        writer.writeheader()
-        for item in data['BEAAPI']['Results']['Data']:
-            writer.writerow(item)
         
 
 
