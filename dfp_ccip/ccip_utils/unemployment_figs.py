@@ -31,6 +31,7 @@ def make_line_graph(df, area):
     df['unemployment'] = df['unemployed']/df['civ_labor_force']
     title = 'Unemployment Rate Last 14 Months\n' + area
     df.plot(x='date_monthly', y='unemployment', kind='line', title=title, legend=False)
+    return df
 
 cd = '/Users/kianaocean/Documents/CMU/Python (95888)/Project/DFP-CCIP/'
 
@@ -79,15 +80,16 @@ df.drop_duplicates(inplace=True)
 
 # Create maps & plots - outputs one figure depending on user input
 if ((state == '') & (county == '') & (date_input == '')):
-    make_line_graph(df, 'United States')
+    output_df = make_line_graph(df, 'United States')
 elif ((state != '') & (county == '') & (date_input == '')):
     state_df = df.loc[df['state'] == state]
-    make_line_graph(state_df, state)
+    output_df = make_line_graph(state_df, state)
 elif ((state != '') & (county != '') & (date_input == '')):
     statecounty_df = df.loc[(df['state'] == state) & (df['county'] == county)]
     area = county + ' County, ' + state
-    make_line_graph(statecounty_df, area)
+    output_df = make_line_graph(statecounty_df, area)
 elif ((state == '') & (county == '') & (date_input != '')):
+    output_df = df
     date_str = date.strftime('%B %Y')
     title = 'US Unemployment Rates by County, ' + date_str
     fig = px.choropleth(df, geojson=counties, locations='fips', color='unemployed_rate', hover_name='county', title=title,\
@@ -95,9 +97,11 @@ elif ((state == '') & (county == '') & (date_input != '')):
     plot(fig)
 else:
     state_df = df.loc[df['state'] == state]
+    output_df = state_df
     date_str = date.strftime('%B %Y')
     title = state + ' Unemployment Rates by County, ' + date_str
     fig = ff.create_choropleth(fips=state_df['fips'], values=state_df['unemployed_rate'], scope=[state], \
                                show_state_data=True, round_legend_values=True, legend_title='Unemployment Rate', \
                                        county_outline={'color': 'rgb(255,255,255)', 'width': 0.5},exponent_format=True, show_hover=True, title=title)
     plot(fig)
+
