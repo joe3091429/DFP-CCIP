@@ -100,19 +100,21 @@ else: # County & state
 
 
 # Print formatted table
-print_dict = {}
-print_dict['Total population:'] = pop
-print_dict['Population density per square mile:'] = pop_density
-print_dict['Number of people uninsured:'] = num_uninsured
-print_dict['    percent uninsured:'] = (num_uninsured/pop)*100
-print_dict['Unemployment rate last reported month:'] = unemployment
-print_dict['Personal income per capita (2018):'] = personal_income
-print_dict['New Covid-19 cases in last 14 days:'] = cases
-print_dict['    per 100,000:'] = (cases/pop)*100000
-print_dict['Covid-19 deaths in last 14 days:'] = deaths
-for key, value in print_dict.items():
+output_dict = {}
+output_dict['Total population:'] = pop
+output_dict['Population density per square mile:'] = pop_density
+output_dict['Number of people uninsured:'] = num_uninsured
+output_dict['    percent uninsured:'] = (num_uninsured/pop)*100
+output_dict['Unemployment rate last reported month:'] = unemployment
+output_dict['Personal income per capita (2018):'] = personal_income
+output_dict['New Covid-19 cases in last 14 days:'] = cases
+output_dict['    per 100,000:'] = (cases/pop)*100000
+output_dict['Covid-19 deaths in last 14 days:'] = deaths
+for key, value in output_dict.items():
     if ((key == 'Unemployment rate last reported month:')|(key == '    per 100,000:')|(key == '    percent uninsured:')):
         print(f'{key:40}{value:.1f}')
     else:
         print(f'{key:40}{value:,.0f}')
+output_df = pd.DataFrame.from_dict(output_dict, orient='index', columns=['Figure'])
+
 
