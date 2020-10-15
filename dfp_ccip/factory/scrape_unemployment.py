@@ -2,21 +2,19 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import pandas as pd
 from datetime import datetime
-import state_abbrvs
+from dfp_ccip.factory import state_abbrvs
 
 # Scrape unemployment data from BLS website and export to dataframe and csv
-
-cd = '/Users/kianaocean/Documents/CMU/Python (95888)/Project/DFP-CCIP/'
 
 # Scrape data from BLS site and write to txt file
 html = urlopen('https://www.bls.gov/web/metro/laucntycur14.txt')
 bsyc = BeautifulSoup(html.read(), "lxml")
-fout = open(cd+'data/unemployment_raw.txt', 'wt', encoding='utf-8')
+fout = open('data/unemployment_raw.txt', 'wt', encoding='utf-8')
 fout.write(str(bsyc))
 fout.close()
 
 # Clean data and convert to dataframe
-fin = open(cd+'data/unemployment_raw.txt')
+fin = open('data/unemployment_raw.txt')
 dict = {}
 i = 0
 for line in fin:
@@ -64,7 +62,7 @@ state_df = state_abbrvs.get_df()
 ue_df = pd.merge(ue_df, state_df, how='left', on=['state_abbrv'])
 
 # Export to CSV
-ue_df.to_csv(cd+'data/unemployment.csv', index=None)
+ue_df.to_csv('data/unemployment.csv', index=None)
 
 # Function for calling dataframe in merge module
 def get_ue_df():

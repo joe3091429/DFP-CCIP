@@ -22,7 +22,7 @@ class CCIPUtils(object):
 
         # check path exist
         isPath = os.path.exists(abs_path)
-        
+      
         # ask for format
         print('''
         Choose the format of downloaded file (Default as TXT)
@@ -31,6 +31,7 @@ class CCIPUtils(object):
         3) TXT
         ''')
         format_opt = input('Format Option: ').strip()
+        if format_opt != ('1' or '2' or '3'): format_opt = '3'
         
         # download file in specific format
         if isPath == True:

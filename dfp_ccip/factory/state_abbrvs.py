@@ -6,11 +6,9 @@ Created on Tue Oct 13 10:57:34 2020
 @author: kianaocean
 """
 
-cd = '/Users/kianaocean/Documents/CMU/Python (95888)/Project/DFP-CCIP/'
-
 import pandas as pd
 
-file_in = open(cd+'data/states.txt')
+file_in = open('data/states.txt')
 abbrv_list = []
 state_list = []
 for line in file_in:
