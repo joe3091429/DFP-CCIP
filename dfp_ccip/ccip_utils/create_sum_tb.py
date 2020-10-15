@@ -28,7 +28,7 @@ def CreateSumTable(state, county):
             (df.loc[df.date == (yesterday-timedelta(days=14)), 'deaths'].sum())
 
     def get_unemployment(df):
-        df = df[['county','state','civ_labor_force','unemployed','date_monthly']]
+        df = df.loc[:,['county','state','civ_labor_force','unemployed','date_monthly']]
         df.drop_duplicates(inplace=True)
         max_month = df['date_monthly'].max()
         labor_force = df.loc[df.date_monthly == max_month, 'civ_labor_force'].sum()
@@ -36,19 +36,19 @@ def CreateSumTable(state, county):
         return (num_unemployed/labor_force)*100
 
     def get_personal_income(df, pop):
-        df = df[['county','state', 'personal_income']]
+        df = df.loc[:,['county','state', 'personal_income']]
         df.drop_duplicates(inplace=True)
         income = (df['personal_income'].sum())*1000
         return income/pop
 
     def get_pop_density(df, pop):
-        df = df[['county','state', 'area_sqmi']]
+        df = df.loc[:,['county','state', 'area_sqmi']]
         df.drop_duplicates(inplace=True)
         tot_area = df['area_sqmi'].sum()
         return pop/tot_area
 
     def get_num_uninsured(df):
-        df = df[['county','state', 'num_uninsured']]
+        df = df.loc[:,['county','state', 'num_uninsured']]
         df.drop_duplicates(inplace=True)
         return df['num_uninsured'].sum()
         
