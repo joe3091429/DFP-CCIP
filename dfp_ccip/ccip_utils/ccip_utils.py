@@ -71,6 +71,7 @@ class CCIPUtils(object):
                  columns = [s_state, s_state, s_county, s_county])
         return data
 
+    '''
     def create_economy_data(s_state, s_county):
 
         # kiana's code
@@ -78,7 +79,7 @@ class CCIPUtils(object):
         data = pd.DataFrame([[ 1, 2, 3, 4],[5, 6, 7, 8], [s_state, 'b', s_county, 'd']], index = ['aa', 'bb', 'cc'], 
                  columns = ['aa', 'bb', 'cc', 'dd'])
         return data
-
+    '''
     def create_demo_health_data(s_state, s_county):
 
         # xiaoye's code
