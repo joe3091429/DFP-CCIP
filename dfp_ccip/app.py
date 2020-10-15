@@ -92,8 +92,6 @@ def main():
         if aspect == '1':
             df = CCIPUtils.create_health_data(state, county)
         elif aspect == '2':
-            state = state.title()
-            county = county.title()
             df = CCIPUtils.create_economy_data(state, county) 
         elif aspect == '3':
             df = CCIPUtils.create_demo_health_data(state, county)
