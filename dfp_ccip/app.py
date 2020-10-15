@@ -1,10 +1,12 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+
 import sys, time
 from dfp_ccip.ccip_utils.ccip_utils import CCIPUtils
 from dfp_ccip.ccip_utils import create_sum_tb
 from dfp_ccip.factory import merge_countylevel
 from dfp_ccip.validation import val_aspect, val_name
+from dfp_ccip.ccip_utils.unemployment_figs import UnemploymentFigs
 
 
 def main():
@@ -92,7 +94,8 @@ def main():
         if aspect == '1':
             df = CCIPUtils.create_health_data(state, county)
         elif aspect == '2':
-            df = CCIPUtils.create_economy_data(state, county) 
+            #df = CCIPUtils.create_economy_data(state, county) 
+            df = UnemploymentFigs.create_economy_data(title_state, title_county)
         elif aspect == '3':
             df = CCIPUtils.create_demo_health_data(state, county)
         elif aspect == '4':
