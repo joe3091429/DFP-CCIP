@@ -11,8 +11,6 @@ import plotly.express as px
 from pandas import DataFrame
 
 from dfp_ccip.ccip_utils.data_collector import DataCollector
-
-
 from dfp_ccip.ccip_utils.ccip_utils import CCIPUtils
 
 
@@ -34,7 +32,7 @@ class Visualizer(object):
         """
         while True:
             input_result = self.get_input()
-
+            print("Processing data, please wait...")
             month, date = input_result  # convert input into month and date
 
             if month and date:
@@ -92,7 +90,7 @@ class Visualizer(object):
                 break
 
     def health_eco_data(self, state: str, county: str):
-
+        print("Processing data, please wait...")
         if state and county:  # 曲线图，左纵坐标为感染数，右纵坐标为失业率
             self.draw_on_line_with_double_y(
                 state=state, county=county,
@@ -116,7 +114,7 @@ class Visualizer(object):
             )
 
     def health_demo_data(self, state: str, county: str):
-
+        print("Processing data, please wait...")
         if county:  # 至今每天给定county的数据
             county_data = self.data_collector.get_county_data(state=state, county=county, need_all_county=True)
         else:  # 最新的state所有county数据
@@ -186,7 +184,7 @@ class Visualizer(object):
         right_axis.set_ylabel(y2_name)
         right_axis.tick_params(axis='y')
 
-        left_axis.set_title('monthly infection rate line & unemployment rate line')
+        left_axis.set_title('monthly positive cases line & unemployment rate line')
 
         plt.legend([l1, l2], [col1, col2], loc='upper left')
         plt.show()
@@ -220,11 +218,11 @@ class Visualizer(object):
                 sum_labor = i_df['civ_labor_force'].astype(float).sum()
                 sum_popu = self.data_collector.state2popu[state] if state else self.data_collector.state2popu['total']
                 new_row = DataFrame(
-                    [[date, sum_cases / sum_popu * 100, sum_unemploy / sum_labor * 100, sum_cases, sum_popu]],
+                    [[date, sum_cases / sum_popu * 100000, sum_unemploy / sum_labor * 100, sum_cases, sum_popu]],
                     columns=['date', 'infection_rate', 'unemployment_rate', 'cases', 'popu'])
                 new_df = pd.concat([new_df, new_row], axis=0)
 
-            print(new_df)
+            # print(new_df)
             new_df = new_df.set_index('date').dropna()
             return new_df
 
