@@ -1,15 +1,18 @@
+"""
+This class is used to respond to user's choice.(health data, health_economy data, health_demographic data)
+All the visualization will be done in this class.
+Possible usage of this class is listed under (if __name__ == '__main__':)
+"""
 import calendar
 import datetime
 import json
-from typing import List
-from urllib.request import urlopen
-
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import plotly.express as px
+from typing import List
+from urllib.request import urlopen
 from pandas import DataFrame
-
 from dfp_ccip.ccip_utils.data_collector import DataCollector
 from dfp_ccip.ccip_utils.ccip_utils import CCIPUtils
 
@@ -20,35 +23,35 @@ class Visualizer(object):
     """
 
     def __init__(self, output: str = None):
-        self.output = output if output else r'output'
+        # self.output = output if output else r'output'
         self.data_collector = DataCollector()
 
     def health_data(self, state: str, county: str):
         """
-        
-        :param state:
-        :param county:
-        :return:
+        If no state and no county, country level query.
+        If state and no county, state level query.
+        If state and county, county level query.
+        :param state: target state
+        :param county: target county
         """
         while True:
             input_result = self.get_input()
             print("Processing data, please wait...")
             month, date = input_result  # convert input into month and date
 
-            if month and date:
+            if month and date:  # specifiv day
                 if county and state:
                     # all month, date, county and state are valid
                     # show data on exact date (country, state, county)
                     self.show_on_bar(state=state, county=county, month=month, date=date, data_type='infected')
                 elif state:
-                    # draw map on state
+                    # draw map on state(state level)
                     self.show_on_map(state=state, county=county, month=month, date=date, data_type='infected')
-                    # show infected in state & country
-                    # self.show_on_bar(state=state, county=county, month=month, date=date, data_type='infected')
                 else:
+                    # draw map on state(country level)
                     self.show_on_map(state=state, county=county, month=month, date=date, data_type='infected')
 
-            elif month and not date:
+            elif month and not date:  # specific month
                 if county and state:
                     # show monthly data (country, state, county)
                     self.show_on_line(state=state, county=county, month=month, date=date, data_type='infected')
@@ -58,10 +61,11 @@ class Visualizer(object):
                     self.show_on_line(state=state, county=county, month=month, date=date, data_type='infected')
                     self.show_on_line(state=state, county=county, month=month, date=date, data_type='dead')
                 else:
+                    # show monthly data (country)
                     self.show_on_line(state=state, county=county, month=month, date=date, data_type='infected')
                     self.show_on_line(state=state, county=county, month=month, date=date, data_type='dead')
 
-            elif not month and not date:
+            elif not month and not date:  # from Feb 1st to now
                 if county and state:
                     # show data till now (country, state, county)
                     self.show_on_line(state=state, county=county, month=month, date=date, data_type='infected')
@@ -71,6 +75,7 @@ class Visualizer(object):
                     self.show_on_line(state=state, county=county, month=month, date=date, data_type='infected')
                     self.show_on_line(state=state, county=county, month=month, date=date, data_type='dead')
                 else:
+                    # show data till now (country)
                     self.show_on_line(state=state, county=county, month=month, date=date, data_type='infected')
                     self.show_on_line(state=state, county=county, month=month, date=date, data_type='dead')
 
@@ -90,22 +95,30 @@ class Visualizer(object):
                 break
 
     def health_eco_data(self, state: str, county: str):
+        '''
+        If no state and no county, country level query.
+        If state and no county, state level query.
+        If state and county, county level query.
+        This functions shows health data and economy related data.
+        :param state: target state
+        :param county: target county
+        '''
         print("Processing data, please wait...")
-        if state and county:  # 曲线图，左纵坐标为感染数，右纵坐标为失业率
+        if state and county:  # left_y: cumulative positive cases, right_y: monthly unemployment rate
             self.draw_on_line_with_double_y(
                 state=state, county=county,
                 col1='cases', col2='unemployed_rate',
                 x_name='date', y1_name='number of cases', y2_name='%', max_percent=100,
                 left_auto=True, right_auto=False
             )
-        elif state:
+        elif state:  # left_y:  positive cases per 100,000, right_y: monthly unemployment rate
             self.draw_on_line_with_double_y(
                 state=state, county=county,
                 col1='infection_rate', col2='unemployment_rate',
                 x_name='date', y1_name='positive cases per 100,000', y2_name='%', max_percent=20,
                 left_auto=True, right_auto=True
             )
-        else:
+        else: # left_y:  positive cases per 100,000, right_y: monthly unemployment rate
             self.draw_on_line_with_double_y(
                 state=state, county=county,
                 col1='infection_rate', col2='unemployment_rate',
@@ -114,24 +127,32 @@ class Visualizer(object):
             )
 
     def health_demo_data(self, state: str, county: str):
+        '''
+        If no state and no county, country level query.
+        If state and no county, state level query.
+        If state and county, county level query.
+        This functions shows health data and demographic related data.
+        :param state: target state
+        :param county: target county
+        '''
         print("Processing data, please wait...")
-        if county:  # 至今每天给定county的数据
+        if county:  # target county's data until now
             county_data = self.data_collector.get_county_data(state=state, county=county, need_all_county=True)
-        else:  # 最新的state所有county数据
-            date = '2020-08-01'
+        else:  # county's data with in the state, if state is '', then retrieve whole country's data
+            date = '2020-08-01'  # set to 2020-08-01 because demo data for sep and oct is unavailable
             county_data = self.data_collector.get_county_data(state, county, date, need_all_county=True)
 
-        # select cases and TOT_POP and # filter those TOT_POP = NaN
+        # select cases and total_population and # filter those total_population = NaN
         county_data = county_data[['date', 'cases', 'total_population', 'fips']].dropna().set_index('date')
         positive_rate = county_data['cases'] / county_data['total_population']
         positive_percent = DataFrame(positive_rate.mul(100))
         positive_percent.columns = ['positive_percent']
 
-        if state and county:  # 曲线图，左纵坐标为感染率(感染数/该county人口：total_population)
+        if state and county:  # line chart, y axis means infection rate(positive cases / county population)
             self.draw_positive_line(positive_percent)
-            save_name = 'positive-percent-data-{}-{}.csv'.format(state, county)
-            self.save(county_data, save_name)
-        else:  # Map,显示整个state里不同county的感染率情况
+            # save_name = 'positive-percent-data-{}-{}.csv'.format(state, county)
+            self.save(county_data, "")
+        else:  # Map, show infection rate for different counties with in state/country
             map_data = pd.concat([county_data, positive_percent], axis=1)
             # print(map_data)
             self.draw_a_map(map_data, 'positive_percent', 'positive percent', [0, 1])
@@ -139,10 +160,9 @@ class Visualizer(object):
 
     @staticmethod
     def draw_positive_line(df: DataFrame):
-
+        # helper function
         fig, axis = plt.subplots(figsize=(12, 8))
         df.plot(ax=axis)
-        # l, = axis.plot(positive_percent)
         axis.set_xlabel('date')
         axis.set_ylabel('%')
         plt.legend(['positive percent'], loc='upper left')
@@ -172,12 +192,12 @@ class Visualizer(object):
             left_axis.set_ylim(0, max_percent)
             left_axis.set_yticks(np.arange(0, max_percent, 20))
 
-        # 设置左坐标轴以及右坐标轴的范围、精度
+        # set range, precision
         if not right_auto:
             right_axis.set_ylim(0, max_percent)
             right_axis.set_yticks(np.arange(0, max_percent, 20))
 
-        # 设置坐标及标题的大小、颜色
+        # set title, label, color
         left_axis.set_xlabel(x_name)
         left_axis.set_ylabel(y1_name)
         left_axis.tick_params(axis='y')
@@ -189,15 +209,16 @@ class Visualizer(object):
         plt.legend([l1, l2], [col1, col2], loc='upper left')
         plt.show()
 
-        save_name = 'health-eco-data-{}-{}.csv'.format(state, county)
-        self.save(df, save_name)
+        # save_name = 'health-eco-data-{}-{}.csv'.format(state, county)
+        self.save(df, '')
 
     def deal_with_state_and_country(self, df: DataCollector, state: str, county: str):
+        # helper function used to handle no state, no county situation
         if state and county:
             df = df.set_index('date')
             return df
         else:
-            # 给定了state，求每月1号state感染数和平均失业率
+            # calculate state/country level unemployment rate and positive cases per 100,000
             new_df = DataFrame([], columns=['date', 'infection_rate', 'unemployment_rate', 'cases', 'popu'])
             new_end_df = DataFrame([], columns=['date', 'infection_rate', 'unemployment_rate', 'cases', 'popu'])
             for i in range(2, 11):
@@ -304,20 +325,14 @@ class Visualizer(object):
     def line_with_subplot(df: DataFrame, data_type: str):
         fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(25, 8))
 
-        # ax1 = plt.subplot(1, 2, 1)
-        # ax2 = plt.subplot(1, 2, 2)
-
         l1, = axes[0].plot(df.country_count, label='country')
         l1, = axes[0].plot(df.state_count, label='state')
         axes[0].legend(loc='upper left')
-        # df.country_count.plot(ax=axes[0], label='country')
-        # df.state_count.plot(ax=axes[0], label='state')
 
         l2, = axes[1].plot(df.state_count, label='state')
         l2, = axes[1].plot(df.county_count, label='county')
         axes[1].legend(loc='upper left')
-        # df.state_count.plot(ax=axes[1], label='state')
-        # df.county_count.plot(ax=axes[1], label='county')
+
         axes[1].set_title('Incremental {} cases in state and county'.format(data_type))
         axes[0].set_title('Incremental {} cases in country and state'.format(data_type))
 
@@ -331,15 +346,14 @@ class Visualizer(object):
 
     def save(self, df: DataFrame, save_name: str):
         CCIPUtils.download_files(df)
-        # TODO: call util save
-        # CCIPUtils.download_files(df)
         # input_result = input('save? (y/n)\n')
         # if input_result.strip() == 'y':
         #     df.to_csv(os.path.join(self.output, save_name))
 
 
 if __name__ == '__main__':
-    print("test")
+    pass
+    # print("test")
     # vi = Visualizer()
     # Health only
     # vi.health_data('', '')  # country level
@@ -365,6 +379,6 @@ if __name__ == '__main__':
     #
     # # Health & Demo
 
-    # vi.health_demo_data('', '')  # country level Map of infection rate. TODO: add download
+    # vi.health_demo_data('', '')  # country level Map of infection rate.
     # vi.health_demo_data('california', '')  # state level Map of infection rate.
     # vi.health_demo_data('california', 'alameda')  # county level: infection rate line for different days
