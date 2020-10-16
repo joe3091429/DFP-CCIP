@@ -1,8 +1,11 @@
-"""
-This class is used to respond to user's choice.(health data, health_economy data, health_demographic data)
-All the visualization will be done in this class.
-Possible usage of this class is listed under (if __name__ == '__main__':)
-"""
+'''
+    File name: vizualizer
+    Group members: Kiana, Xiaoye, Joe
+    Purpose: This class is used to respond to user's choice.(health data, health_economy data, health_demographic data)
+             All the visualization will be done in this class.
+             Possible usage of this class is listed under (if __name__ == '__main__':)
+'''
+
 import calendar
 import datetime
 import json
@@ -16,24 +19,20 @@ from pandas import DataFrame
 from dfp_ccip.ccip_utils.data_collector import DataCollector
 from dfp_ccip.ccip_utils.ccip_utils import CCIPUtils
 
-
 class Visualizer(object):
-    """
-    menu class
-    """
 
     def __init__(self, output: str = None):
         # self.output = output if output else r'output'
         self.data_collector = DataCollector()
 
     def health_data(self, state: str, county: str):
-        """
+        '''
         If no state and no county, country level query.
         If state and no county, state level query.
         If state and county, county level query.
         :param state: target state
         :param county: target county
-        """
+        '''
         while True:
             input_result = self.get_input()
             print("Processing data, please wait...")

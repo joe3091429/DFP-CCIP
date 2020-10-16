@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+'''
+    File name: unemployment_figs
+    Group members: Kiana, Xiaoye, Joe
+    Purpose: Creates charts and maps of unemployment data (if user chooses economy)
+'''
 
 from urllib.request import urlopen
 import json
@@ -10,9 +15,7 @@ from plotly.offline import plot
 import matplotlib.pyplot as plt
 
 class UnemploymentFigs(object):
-    '''
-        Creates charts and maps of unemployment data (if user chooses economy)
-    '''
+
     def create_economy_data(s_state, s_county):
         
         def clean_fips(df):

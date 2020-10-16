@@ -1,12 +1,15 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+'''
+    File name: ccip_utils
+    Group members: Kiana, Xiaoye, Joe
+    Purpose: Utility class for processing data
+'''
 import pandas as pd
 import os
 
 class CCIPUtils(object):
-    '''
-        Utility class for processing data
-    '''
+    
     @staticmethod
     def download_files(df):
 
@@ -15,21 +18,14 @@ class CCIPUtils(object):
         format_dict = {'1':'.csv', '2':'.json', '3': '.txt'}
         
         # ask for path
-        print('''Input the path if you want to download in the specific place. 
-        If not, leave the blank and the file will be in output file.
-        ''')
+        print('Input the path if you want to download in the specific place. \nIf not, leave the blank and the file will be in output file.\n')
         abs_path = input('Path: ').strip()
 
         # check path exist
         isPath = os.path.exists(abs_path)
       
         # ask for format
-        print('''
-        Choose the format of downloaded file (Default as TXT)
-        1) CSV
-        2) JSON
-        3) TXT
-        ''')
+        print('\nChoose the format of downloaded file (Default as TXT)\n1) CSV\n2) JSON\n3) TXT')
         format_opt = input('Format Option: ').strip()
         if format_opt != ('1' or '2' or '3'): format_opt = '3'
         
@@ -53,7 +49,7 @@ class CCIPUtils(object):
             else:
                 df.to_csv(rel_path + '/' + op_name + format_dict[format_opt])
             print('Download the file ' + op_name + ' to the path ' + rel_path)
-        print("Complete downloading files.")
+        print("Complete downloading files.\n")
     
     @staticmethod
     def verify_output_name(path, fileformat):
@@ -62,36 +58,3 @@ class CCIPUtils(object):
             i += 1
         filename =  'output' + str(i)
         return filename
-
-    def create_health_data(s_state, s_county):
-
-        # xiaoye's code
-        print("Creating health plot and map...")
-        data = pd.DataFrame([[ 1, 2, 3, 4],[5, 6, 7, 8], ['a', 'b', 'c', 'd']], index = ['aa', 'bb', 'cc'], 
-                 columns = [s_state, s_state, s_county, s_county])
-        return data
-
-    '''
-    def create_economy_data(s_state, s_county):
-
-        # kiana's code
-        print("Creating economy plot and map...")
-        data = pd.DataFrame([[ 1, 2, 3, 4],[5, 6, 7, 8], [s_state, 'b', s_county, 'd']], index = ['aa', 'bb', 'cc'], 
-                 columns = ['aa', 'bb', 'cc', 'dd'])
-        return data
-    '''
-    def create_demo_health_data(s_state, s_county):
-
-        # xiaoye's code
-        print("Creating health plot and map...")
-        data = pd.DataFrame([[ 1, 2, 3, 4],[5, 6, 7, 8], ['a', 'b', 'c', 'd']], index = ['aa', 'bb', 'cc'], 
-                 columns = [s_state, s_state, s_county, s_county])
-        return data
-
-    def create_eco_health_data(s_state, s_county):
-
-        # xiaoye's code
-        print("Creating health plot and map...")
-        data = pd.DataFrame([[ 1, 2, 3, 4],[5, 6, 7, 8], ['a', 'b', 'c', 'd']], index = ['aa', 'bb', 'cc'], 
-                 columns = [s_state, s_state, s_county, s_county])
-        return data

@@ -1,4 +1,8 @@
-## Personal income
+'''
+    File name: scrape_personal_income
+    Group members: Kiana, Xiaoye, Joe
+    Purpose: Scrape personal income data
+'''
 import json
 from urllib.request import urlopen
 import pandas as pd

@@ -1,6 +1,8 @@
-"""
-This class is used to process necessary data from csv/txt/API.
-"""
+'''
+    File name: data_collector
+    Group members: Kiana, Xiaoye, Joe
+    Purpose: Collect data of health data from country, states, or counties
+'''
 import calendar
 import datetime
 import json
@@ -11,6 +13,7 @@ from pandas import DataFrame
 
 
 class DataCollector(object):
+    
     def __init__(self):
         state_txt = './data/state.txt'
         csv_path = './data/county_level_merge.csv'

@@ -1,10 +1,14 @@
+'''
+    File name: scrape_unemployment
+    Group members: Kiana, Xiaoye, Joe
+    Purpose: Scrape unemployment data from BLS website and export to dataframe and csv
+'''
+
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import pandas as pd
 from datetime import datetime
 from dfp_ccip.factory import state_abbrvs
-
-# Scrape unemployment data from BLS website and export to dataframe and csv
 
 # Scrape data from BLS site and write to txt file
 html = urlopen('https://www.bls.gov/web/metro/laucntycur14.txt')

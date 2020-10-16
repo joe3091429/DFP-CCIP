@@ -1,0 +1,10 @@
+,Figure
+Total population:,12783977.0
+Population density per square mile:,285.7242486169609
+Number of people uninsured:,674739.0
+    percent uninsured:,5.278005428201255
+Unemployment rate last reported month:,10.490632389077648
+Personal income per capita (2018):,56326.24659759635
+New Covid-19 cases in last 14 days:,17424.0
+"    per 100,000:",136.29561442421243
+Covid-19 deaths in last 14 days:,262.0

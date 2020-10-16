@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Sat Oct 10 13:21:44 2020
-
-@author: kianaocean
-"""
+'''
+    File name: create_sum_tb
+    Group members: Kiana, Xiaoye, Joe
+    Purpose: Create summary table for region level which users want to explore
+'''
 
 import pandas as pd
 from datetime import date
 from datetime import timedelta
 
 # Creates summary table for user after they enter state/county
-
 def CreateSumTable(state, county):
 
     def get_pop(df):

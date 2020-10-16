@@ -1,19 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Oct  1 18:31:21 2020
-
-@author: kianaocean
-"""
-
-
+'''
+    File name: merge_countylevel
+    Group members: Kiana, Xiaoye, Joe
+    Purpose: Merges Personal Income, Unemployment, Demographic, and Covid data
+'''
 from dfp_ccip.factory import scrape_personal_income as pi
 from dfp_ccip.factory import scrape_unemployment as ue
 from dfp_ccip.factory import scrape_demo_social as dm
 import pandas as pd
 from datetime import datetime
 
-# Merges Personal Income, Unemployment, Demographic, and Covid data
 class MergeCountyLevel():
 
     def start():

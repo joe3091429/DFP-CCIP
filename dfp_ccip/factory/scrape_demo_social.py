@@ -1,3 +1,8 @@
+'''
+    File name: scrape_demo_social
+    Group members: Kiana, Xiaoye, Joe
+    Purpose: Merge demographic and social data
+'''
 import pandas as pd
 from urllib.request import urlopen
 from bs4 import BeautifulSoup

@@ -1,3 +1,8 @@
+'''
+    File name: state_abbrvs
+    Group members: Kiana, Xiaoye, Joe
+    Purpose: state abbreviation name
+'''
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
