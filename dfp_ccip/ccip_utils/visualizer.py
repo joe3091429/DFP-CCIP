@@ -344,7 +344,14 @@ class Visualizer(object):
         plt.show()
 
     def save(self, df: DataFrame, save_name: str):
-        CCIPUtils.download_files(df)
+        # Download or not
+        print('\nWould you like to download this table? (Default as No)\nY) Yes, download it and keep explore\nN) No, just move on\n')
+        load_option = input('Download: ').strip()
+        print('')
+        if load_option == 'Y' or load_option == 'y':
+            CCIPUtils.download_files(df)
+        else:
+            print('keep explore...\n')
         # input_result = input('save? (y/n)\n')
         # if input_result.strip() == 'y':
         #     df.to_csv(os.path.join(self.output, save_name))

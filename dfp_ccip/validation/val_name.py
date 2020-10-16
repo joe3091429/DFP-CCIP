@@ -9,6 +9,7 @@ import pandas as pd
 
 def val_name(v_state, v_county, result):
 
+    # validating region level data
     tb = 'data/mapping_table_county_state.csv'
     mp_table = pd.read_csv(tb, header = 0)
     print("Validating input state and county......")

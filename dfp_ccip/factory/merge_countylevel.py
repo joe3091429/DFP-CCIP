@@ -39,6 +39,7 @@ class MergeCountyLevel():
             ue_df.drop(columns=['area_code','state_fips', 'county_fips', 'period', 'state', 'county'], inplace=True)
 
             # Demographics
+            dm.ScrapeDS()
             csv_path = 'data/demographic_data.csv'
             de_df = pd.read_csv(csv_path)
             de_df = clean_fips(de_df)
