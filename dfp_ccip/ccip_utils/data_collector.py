@@ -1,12 +1,11 @@
+"""
+This class is used to process necessary data from csv/txt/API.
+"""
 import calendar
 import datetime
 import json
 import re
-from urllib.request import urlopen
-
-import matplotlib.pyplot as plt
 import pandas as pd
-import plotly.express as px
 import requests
 from pandas import DataFrame
 
@@ -84,47 +83,6 @@ class DataCollector(object):
         all_data = self.integrate_data(country_data, state_data, county_data, start_date, end_date)
 
         return all_data
-
-    def show_on_map(self, date: str, state: str, county: str):
-        county_data = self.get_county_data(state, county, date)
-        with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
-            counties = json.load(response)
-        fig = px.choropleth_mapbox(
-            county_data, geojson=counties, locations='fips', color='cases',
-            color_continuous_scale="OrRd",
-            mapbox_style="carto-positron",
-            range_color=(0, 12),
-            zoom=3, center={"lat": 37.0902, "lon": -95.7129},
-            opacity=0.5,
-            labels={'cases': 'Death cases'})
-        fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
-        fig.show()
-
-    def show(self, all_data: DataFrame):
-
-        print(all_data)
-        all_data = all_data.cumsum()
-        # fig, axes = plt.subplots(nrows=1, ncols=2)
-        # all_data.country_count.plot(ax=axes[0])
-        # all_data.state_count.plot(ax=axes[0])
-        # all_data.county_count.plot(ax=axes[0])
-        # axes[0].set_title('A')
-        # all_data.county_count.plot(ax=axes[1])
-        # axes[1].set_title('B')
-        # with pd.plotting.plot_params.use('x_compat', True):
-        fig, axes = plt.subplots(nrows=1, ncols=2)
-        all_data.country_count.plot(ax=axes[0])
-        # all_data.country_count.plot(label='country', color='r')
-        if self.show_state:
-            all_data.state_count.plot(ax=axes[0], label='State')
-            # all_data.state_count.plot(label='state', color='g')
-        if self.show_county:
-            all_data.county_count.plot(ax=axes[0])
-            all_data.county_count.plot(ax=axes[1])
-            axes[1].set_title('B')
-            # all_data.county_count.plot(label='county', color='b')
-        axes[0].set_title('A')
-        plt.show()
 
     @staticmethod
     def integrate_data(
@@ -271,6 +229,9 @@ class DataCollector(object):
         return name2abbr, abbr2name
 
     def load_state_popu(self, txt_path: str):
+        """
+        map states name to their population
+        """
         name2popu = {}
         with open(txt_path) as f_in:
             for line in f_in.readlines()[1:-1]:
@@ -279,7 +240,7 @@ class DataCollector(object):
                 name2popu[name] = popu
                 name2popu[name.lower()] = popu
                 name2popu[self.state2abbr[name.lower()]] = popu
-        name2popu['total'] = 321418820
+        name2popu['total'] = 321418820  # for whole country
         return name2popu
 
     @staticmethod
@@ -302,10 +263,10 @@ class DataCollector(object):
 
 
 if __name__ == '__main__':
-    dc = DataCollector()
+    pass
+    # dc = DataCollector()
     # data = dc.get_data('ca', 'Alameda', 'dead', '10', '9')
     # print(data)
     # data = dc.get_data('ca', 'Alameda', 'infected', '10', '9')
     # print(data)
-    dc.show_on_map(date='2020-04-02', state='CA', county='')
     # dc.show(data)
