@@ -7,6 +7,7 @@ from dfp_ccip.ccip_utils import create_sum_tb
 from dfp_ccip.factory import merge_countylevel
 from dfp_ccip.validation import val_aspect, val_name
 from dfp_ccip.ccip_utils.unemployment_figs import UnemploymentFigs
+from dfp_ccip.ccip_utils.visualizer import Visualizer
 
 
 def main():
@@ -92,13 +93,19 @@ def main():
         
         # show visualization
         if aspect == '1':
+            vi = Visualizer()
+            vi.health_data(state, county)
             df = CCIPUtils.create_health_data(state, county)
         elif aspect == '2':
             #df = CCIPUtils.create_economy_data(state, county) 
             df = UnemploymentFigs.create_economy_data(title_state, title_county)
         elif aspect == '3':
+            vi = Visualizer()
+            vi.health_demo_data(state, county)
             df = CCIPUtils.create_demo_health_data(state, county)
         elif aspect == '4':
+            vi = Visualizer()
+            vi.health_eco_data(state, county)
             df = CCIPUtils.create_eco_health_data(state, county)
 
         print(df) 
