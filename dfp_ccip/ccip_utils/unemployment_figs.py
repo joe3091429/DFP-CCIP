@@ -66,7 +66,10 @@ class UnemploymentFigs(object):
             continue_option = 'y'
             while (continue_option != 'n'):
                 # Get date from user
-                date_input = input("Enter month (MM/YYYY) in last 14 months OR 'N/A' for time series: ")
+                print('\nEnter month (MM/YYYY) in last 14 months to view map OR "N/A" for time series run chart.\n'
+                      'Note: If month provided is prior to available data you will be shown the earliest available month.\n'
+                      'If month provided is after available data you will be shown the latest available month.')
+                date_input = input("Enter month (MM/YYYY) OR 'N/A' for time series: ")
                 
                 if ((date_input == 'n/a') | (date_input == 'N/a') | (date_input == 'n/A') | (date_input == '')):
                     date_input = 'N/A'
