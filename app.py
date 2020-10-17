@@ -10,7 +10,7 @@ import sys, time
 from dfp_ccip.ccip_utils.ccip_utils import CCIPUtils
 from dfp_ccip.ccip_utils import create_sum_tb
 from dfp_ccip.factory import merge_countylevel
-from dfp_ccip.validation import val_aspect, val_name
+from dfp_ccip.validation import val_aspect, val_name, val_map_tb
 from dfp_ccip.ccip_utils.unemployment_figs import UnemploymentFigs
 from dfp_ccip.ccip_utils.visualizer import Visualizer
 
@@ -40,6 +40,8 @@ def main():
 
     # Input the level of area
     explore = ''
+    val_map_tb.val_map_tb()
+    
     while(explore != 'Q'):
         val_result = False 
         while(val_result != True):
@@ -95,7 +97,6 @@ def main():
         if aspect == '1':
             vi = Visualizer()
             vi.health_data(state, county)
-            df = CCIPUtils.create_health_data(state, county)
         elif aspect == '2':
             df = UnemploymentFigs.create_economy_data(title_state, title_county)
         elif aspect == '3':
